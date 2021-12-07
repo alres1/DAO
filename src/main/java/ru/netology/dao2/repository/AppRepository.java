@@ -2,6 +2,7 @@ package ru.netology.dao2.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -20,8 +21,11 @@ public class AppRepository {
     private final String scriptFileName = "getProductName.sql";
     private final String sqlRequest = read(scriptFileName);
 
-    @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    public AppRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
 
     private static String read(String scriptFileName) {
         try (InputStream is = new ClassPathResource(scriptFileName).getInputStream();
@@ -32,9 +36,9 @@ public class AppRepository {
         }
     }
 
-    public String getProductName(String name) {
-        List<Map<String, Object>> list = namedParameterJdbcTemplate.queryForList(sqlRequest, Map.of("name", name));
-        return list.toString();
+    public List<String> getProductName(String name) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource("name", name);
+        return namedParameterJdbcTemplate.queryForList(sqlRequest, parameters, String.class);
     }
 
 }

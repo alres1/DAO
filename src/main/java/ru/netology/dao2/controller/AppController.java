@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.netology.dao2.repository.AppRepository;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 public class AppController {
@@ -13,7 +15,7 @@ public class AppController {
     private AppRepository appRepository;
 
     @GetMapping("/products/fetch-product")
-    public String getAuthorities(@RequestParam("name") String customer) {
+    public List<String> getAuthorities(@RequestParam("name") String customer) {
         return appRepository.getProductName(customer);
     }
 
